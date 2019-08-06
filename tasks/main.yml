@@ -1,0 +1,35 @@
+---
+- name: Unzip command is installed
+  package:
+    name: unzip
+
+- name: Existing alp version
+  command: "{{ alp_install_dir }}/alp --version"
+  register: alp_version_out
+  ignore_errors: yes
+  check_mode: no
+  changed_when: no
+
+- name: Download alp
+  unarchive:
+    src: "{{ alp_download_url }}"
+    dest: /tmp
+    remote_src: yes
+  when: alp_version not in (alp_version_out.stderr | default(""))
+
+- name: Install alp
+  copy:
+    src: /tmp/alp
+    dest: "{{ alp_install_dir }}"
+    remote_src: yes
+    mode: u=rwx,g=rx,o=rx
+
+- name: Obtain installed alp version
+  command: "{{ alp_install_dir }}/alp --version"
+  register: alp_version_out
+  check_mode: no
+  changed_when: no
+
+- name: Installed alp version
+  debug:
+    msg: "alp v{{ alp_version_out.stderr }}"
