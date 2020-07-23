@@ -2,7 +2,7 @@
 alp_release_url: https://github.com/tkuchiki/alp/releases/download
 
 # Do not contain prefix `v`
-alp_version: 0.4.0
+alp_version: 1.0.3
 
 # Install location
 alp_install_dir: /usr/local/bin

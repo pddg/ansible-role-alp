@@ -1,0 +1,77 @@
+name: Test
+
+on: [push]
+
+env:
+  python_version: 3.7
+  pipenv_version: 2020.6.2
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v1
+        with:
+          python-version: ${{ env.python-version }}
+      - name: Restore cache if available
+        uses: actions/cache@v1
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('Pipfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      - name: Restore pipenv cache if available
+        uses: actions/cache@v1
+        with:
+          path: ~/.cache/pipenv
+          key: ${{ runner.os }}-pipenv-${{ hashFiles('Pipfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pipenv-
+      - name: Install pipenv
+        uses: dschep/install-pipenv-action@v1
+        with:
+          version: ${{ env.pipenv_version }}
+      - name: Install dependencies
+        run: |
+          pipenv install --dev
+      - name: Run lint
+        run: |
+          make lint scenario=centos
+          make lint scenario=ubuntu
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        scenario:
+          - ubuntu
+          - centos
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v1
+        with:
+          python-version: ${{ env.python-version }}
+      - name: Restore cache if available
+        uses: actions/cache@v1
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('Pipfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      - name: Restore pipenv cache if available
+        uses: actions/cache@v1
+        with:
+          path: ~/.cache/pipenv
+          key: ${{ runner.os }}-pipenv-${{ hashFiles('Pipfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pipenv-
+      - name: Install pipenv
+        uses: dschep/install-pipenv-action@v1
+        with:
+          version: ${{ env.pipenv_version }}
+      - name: Install dependencies
+        run: |
+          pipenv install --dev
+      - name: Run test
+        run: |
+          make test scenario=${{ matrix.scenario }}
