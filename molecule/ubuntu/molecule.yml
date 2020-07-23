@@ -3,20 +3,17 @@ dependency:
   name: galaxy
 driver:
   name: docker
-lint:
-  name: yamllint
+lint: |
+  yamllint .
+  ansible-lint .
 platforms:
-  - name: centos7
-    image: centos:7
   - name: xenial
     image: ubuntu:16.04
   - name: bionic
     image: ubuntu:18.04
+  - name: focal
+    image: ubuntu:20.04
 provisioner:
   name: ansible
-  lint:
-    name: ansible-lint
 verifier:
   name: testinfra
-  lint:
-    name: flake8

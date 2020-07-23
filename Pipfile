@@ -9,6 +9,8 @@ verify_ssl = true
 ansible = "*"
 molecule = "*"
 docker = "*"
+pytest = "*"
+testinfra = "*"
 
 [requires]
 python_version = "3.7"

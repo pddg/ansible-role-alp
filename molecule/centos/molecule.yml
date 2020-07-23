@@ -1,0 +1,17 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: docker
+lint: |
+  yamllint .
+  ansible-lint .
+platforms:
+  - name: centos7
+    image: centos:7
+  - name: centos8
+    image: centos:8
+provisioner:
+  name: ansible
+verifier:
+  name: testinfra
